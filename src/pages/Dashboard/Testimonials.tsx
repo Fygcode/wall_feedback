@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -36,6 +36,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { supabase } from "@/supabaseClient";
 
 interface Testimonial {
   id: number;
@@ -49,38 +50,41 @@ interface Testimonial {
 }
 
 const Testimonials = () => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([
-    {
-      id: 1,
-      name: "Alex Turner",
-      company: "Digital Agency XYZ",
-      date: "May 2, 2025",
-      content: "Working with you has been a game-changer for our business. The website redesign increased our conversion rate by 45%!",
-      status: "approved",
-      rating: 5,
-      service: "Website Redesign"
-    },
-    {
-      id: 2,
-      name: "Jessica Martinez",
-      company: "StartUp Innovations",
-      date: "May 1, 2025",
-      content: "The social media strategy you developed helped us reach new audiences we hadn't connected with before. Our engagement is up 60%.",
-      status: "pending",
-      rating: 5,
-      service: "Social Media Marketing"
-    },
-    {
-      id: 3,
-      name: "Michael Johnson",
-      company: "Johnson Retail",
-      date: "April 28, 2025",
-      content: "Your e-commerce solutions transformed our online store experience. Sales have increased by 30% in just the first month.",
-      status: "approved",
-      rating: 4,
-      service: "E-commerce Development"
-    }
-  ]);
+  // const [testimonials, setTestimonials] = useState<Testimonial[]>([
+  //   {
+  //     id: 1,
+  //     name: "Alex Turner",
+  //     company: "Digital Agency XYZ",
+  //     date: "May 2, 2025",
+  //     content: "Working with you has been a game-changer for our business. The website redesign increased our conversion rate by 45%!",
+  //     status: "approved",
+  //     rating: 5,
+  //     service: "Website Redesign"
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Jessica Martinez",
+  //     company: "StartUp Innovations",
+  //     date: "May 1, 2025",
+  //     content: "The social media strategy you developed helped us reach new audiences we hadn't connected with before. Our engagement is up 60%.",
+  //     status: "pending",
+  //     rating: 5,
+  //     service: "Social Media Marketing"
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Michael Johnson",
+  //     company: "Johnson Retail",
+  //     date: "April 28, 2025",
+  //     content: "Your e-commerce solutions transformed our online store experience. Sales have increased by 30% in just the first month.",
+  //     status: "approved",
+  //     rating: 4,
+  //     service: "E-commerce Development"
+  //   }
+  // ]);
+
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
 
   // State for edit dialog
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -93,24 +97,109 @@ const Testimonials = () => {
     rating: 5
   });
 
-  const handleApprove = (id: number) => {
+useEffect(() => {
+  const fetchTestimonials = async () => {
+    const { data, error } = await supabase
+      .from("testimonials")
+      .select("*")
+      .order("created_at", { ascending: false }); // you can change ordering as needed
+
+       const now = new Date().toLocaleString();
+
+    if (error) {
+      console.error("Error fetching testimonials:", error.message);
+      toast.error("Failed to load testimonials");
+    } else {
+      console.log("Raw Supabase data:", data); // ✅ log raw data
+
+let formatted = [];
+try {
+  formatted = data.map((item) => ({
+    id: item.id,
+    name: item.name,
+    company: item.company || "N/A",
+    date: new Date(item.created_at).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
+    content: item.content,
+    status: item.status || "pending",
+    rating: item.rating || 0,
+    service: item.service || "N/A",
+  }));
+} catch (e) {
+  console.error("Error while formatting data:", e);
+}
+
+
+        console.log(`[${now}] Formatted testimonials:`, formatted);
+
+      setTestimonials(formatted);
+    }
+  };
+
+  fetchTestimonials();
+}, []);
+
+
+
+const handleApprove = async (id: number) => {
+  // Update status in Supabase
+  const { data, error } = await supabase
+    .from("testimonials")
+    .update({ status: "approved" })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Failed to approve testimonial:", error.message);
+    toast.error("Failed to approve testimonial");
+  } else {
+    // Update local state only if DB update succeeds
     setTestimonials(testimonials.map(testimonial => 
       testimonial.id === id ? {...testimonial, status: "approved"} : testimonial
     ));
     toast.success("Testimonial approved successfully!");
-  };
+  }
+};
 
-  const handleReject = (id: number) => {
+
+const handleReject = async (id: number) => {
+  const { data, error } = await supabase
+    .from("testimonials")
+    .update({ status: "rejected" })
+    .eq("id", id);
+
+  console.log("Reject response data:", data);
+  console.log("Reject response error:", error);
+
+  if (error) {
+    toast.error("Failed to reject testimonial: " + error.message);
+  } else {
     setTestimonials(testimonials.map(testimonial => 
       testimonial.id === id ? {...testimonial, status: "rejected"} : testimonial
     ));
     toast.success("Testimonial rejected");
-  };
+  }
+};
 
-  const handleDelete = (id: number) => {
+const handleDelete = async (id: number) => {
+  const { data, error } = await supabase
+    .from("testimonials")
+    .delete()
+    .eq("id", id);
+
+  console.log("Delete response data:", data);
+  console.log("Delete response error:", error);
+
+  if (error) {
+    toast.error("Failed to delete testimonial: " + error.message);
+  } else {
     setTestimonials(testimonials.filter(testimonial => testimonial.id !== id));
     toast.success("Testimonial deleted successfully");
-  };
+  }
+};
+
 
   const handleEditClick = (testimonial: Testimonial) => {
     setEditingTestimonial(testimonial);

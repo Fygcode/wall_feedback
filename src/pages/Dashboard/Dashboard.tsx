@@ -51,6 +51,7 @@ const Dashboard = () => {
     rating: 5
   });
   const [index, setIndex] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
 
   // useEffect(() => {
   //   const fetchRequests = async () => {
@@ -157,26 +158,44 @@ const Dashboard = () => {
     { label: "Requests Sent", value: 3 },
   ];
 
-  const [recentTestimonials, setRecentTestimonials] = useState([
-    {
-      id: 1,
-      name: "Alex Turner",
-      company: "Digital Agency XYZ",
-      date: "May 2, 2025",
-      content: "Working with you has been a game-changer for our business. The website redesign increased our conversion rate by 45%!",
-      status: "approved",
-      rating: 5,
-    },
-    {
-      id: 2,
-      name: "Jessica Martinez",
-      company: "StartUp Innovations",
-      date: "May 1, 2025",
-      content: "The social media strategy you developed helped us reach new audiences we hadn't connected with before. Our engagement is up 60%.",
-      status: "pending",
-      rating: 5,
-    },
-  ]);
+  // const [recentTestimonials, setRecentTestimonials] = useState([
+  //   {
+  //     id: 1,
+  //     name: "Alex Turner",
+  //     company: "Digital Agency XYZ",
+  //     date: "May 2, 2025",
+  //     content: "Working with you has been a game-changer for our business. The website redesign increased our conversion rate by 45%!",
+  //     status: "approved",
+  //     rating: 5,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Jessica Martinez",
+  //     company: "StartUp Innovations",
+  //     date: "May 1, 2025",
+  //     content: "The social media strategy you developed helped us reach new audiences we hadn't connected with before. Our engagement is up 60%.",
+  //     status: "pending",
+  //     rating: 5,
+  //   },
+  // ]);
+
+  useEffect(() => {
+  const fetchTestimonials = async () => {
+    const { data, error } = await supabase
+      .from("testimonials")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      // handle error
+    } else {
+      // map/format as needed
+      setTestimonials(data);
+    }
+  };
+  fetchTestimonials();
+}, []);
+
+const recentTestimonials = testimonials.slice(0, 2);
 
   const handleCopyLink = (id: string, link: string) => {
     navigator.clipboard.writeText(link);
@@ -185,19 +204,57 @@ const Dashboard = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const handleApprove = (id: number) => {
-    setRecentTestimonials(recentTestimonials.map(testimonial =>
-      testimonial.id === id ? { ...testimonial, status: "approved" } : testimonial
+  // const handleApprove = (id: number) => {
+  //   setRecentTestimonials(recentTestimonials.map(testimonial =>
+  //     testimonial.id === id ? { ...testimonial, status: "approved" } : testimonial
+  //   ));
+  //   toast.success("Testimonial approved successfully!");
+  // };
+
+  const handleApprove = async (id: number) => {
+  // Update status in Supabase
+  const { data, error } = await supabase
+    .from("testimonials")
+    .update({ status: "approved" })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Failed to approve testimonial:", error.message);
+    toast.error("Failed to approve testimonial");
+  } else {
+    // Update local state only if DB update succeeds
+    setTestimonials(testimonials.map(testimonial => 
+      testimonial.id === id ? {...testimonial, status: "approved"} : testimonial
     ));
     toast.success("Testimonial approved successfully!");
-  };
+  }
+};
 
-  const handleReject = (id: number) => {
-    setRecentTestimonials(recentTestimonials.map(testimonial =>
-      testimonial.id === id ? { ...testimonial, status: "rejected" } : testimonial
+  const handleReject = async (id: number) => {
+  const { data, error } = await supabase
+    .from("testimonials")
+    .update({ status: "rejected" })
+    .eq("id", id);
+
+  console.log("Reject response data:", data);
+  console.log("Reject response error:", error);
+
+  if (error) {
+    toast.error("Failed to reject testimonial: " + error.message);
+  } else {
+    setTestimonials(testimonials.map(testimonial => 
+      testimonial.id === id ? {...testimonial, status: "rejected"} : testimonial
     ));
     toast.success("Testimonial rejected");
-  };
+  }
+};
+
+  // const handleReject = (id: number) => {
+  //   setRecentTestimonials(recentTestimonials.map(testimonial =>
+  //     testimonial.id === id ? { ...testimonial, status: "rejected" } : testimonial
+  //   ));
+  //   toast.success("Testimonial rejected");
+  // };
 
   const handleEditClick = (testimonial: any) => {
     setEditingTestimonial(testimonial);
@@ -210,17 +267,36 @@ const Dashboard = () => {
     setIsEditDialogOpen(true);
   };
 
+  // const handleEditSave = () => {
+  //   if (editingTestimonial) {
+  //     setRecentTestimonials(recentTestimonials.map(testimonial =>
+  //       testimonial.id === editingTestimonial.id
+  //         ? {
+  //           ...testimonial,
+  //           name: editForm.name,
+  //           company: editForm.company,
+  //           content: editForm.content,
+  //           rating: editForm.rating
+  //         }
+  //         : testimonial
+  //     ));
+  //     setIsEditDialogOpen(false);
+  //     toast.success("Testimonial updated successfully");
+  //   }
+  // };
+
+  
   const handleEditSave = () => {
     if (editingTestimonial) {
-      setRecentTestimonials(recentTestimonials.map(testimonial =>
-        testimonial.id === editingTestimonial.id
+      setTestimonials(testimonials.map(testimonial => 
+        testimonial.id === editingTestimonial.id 
           ? {
-            ...testimonial,
-            name: editForm.name,
-            company: editForm.company,
-            content: editForm.content,
-            rating: editForm.rating
-          }
+              ...testimonial,
+              name: editForm.name,
+              company: editForm.company,
+              content: editForm.content,
+              rating: editForm.rating
+            } 
           : testimonial
       ));
       setIsEditDialogOpen(false);
