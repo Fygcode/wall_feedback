@@ -180,22 +180,22 @@ const Dashboard = () => {
   // ]);
 
   useEffect(() => {
-  const fetchTestimonials = async () => {
-    const { data, error } = await supabase
-      .from("testimonials")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) {
-      // handle error
-    } else {
-      // map/format as needed
-      setTestimonials(data);
-    }
-  };
-  fetchTestimonials();
-}, []);
+    const fetchTestimonials = async () => {
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) {
+        // handle error
+      } else {
+        // map/format as needed
+        setTestimonials(data);
+      }
+    };
+    fetchTestimonials();
+  }, []);
 
-const recentTestimonials = testimonials.slice(0, 2);
+  const recentTestimonials = testimonials.slice(0, 2);
 
   const handleCopyLink = (id: string, link: string) => {
     navigator.clipboard.writeText(link);
@@ -212,42 +212,42 @@ const recentTestimonials = testimonials.slice(0, 2);
   // };
 
   const handleApprove = async (id: number) => {
-  // Update status in Supabase
-  const { data, error } = await supabase
-    .from("testimonials")
-    .update({ status: "approved" })
-    .eq("id", id);
+    // Update status in Supabase
+    const { data, error } = await supabase
+      .from("testimonials")
+      .update({ status: "approved" })
+      .eq("id", id);
 
-  if (error) {
-    console.error("Failed to approve testimonial:", error.message);
-    toast.error("Failed to approve testimonial");
-  } else {
-    // Update local state only if DB update succeeds
-    setTestimonials(testimonials.map(testimonial => 
-      testimonial.id === id ? {...testimonial, status: "approved"} : testimonial
-    ));
-    toast.success("Testimonial approved successfully!");
-  }
-};
+    if (error) {
+      console.error("Failed to approve testimonial:", error.message);
+      toast.error("Failed to approve testimonial");
+    } else {
+      // Update local state only if DB update succeeds
+      setTestimonials(testimonials.map(testimonial =>
+        testimonial.id === id ? { ...testimonial, status: "approved" } : testimonial
+      ));
+      toast.success("Testimonial approved successfully!");
+    }
+  };
 
   const handleReject = async (id: number) => {
-  const { data, error } = await supabase
-    .from("testimonials")
-    .update({ status: "rejected" })
-    .eq("id", id);
+    const { data, error } = await supabase
+      .from("testimonials")
+      .update({ status: "rejected" })
+      .eq("id", id);
 
-  console.log("Reject response data:", data);
-  console.log("Reject response error:", error);
+    console.log("Reject response data:", data);
+    console.log("Reject response error:", error);
 
-  if (error) {
-    toast.error("Failed to reject testimonial: " + error.message);
-  } else {
-    setTestimonials(testimonials.map(testimonial => 
-      testimonial.id === id ? {...testimonial, status: "rejected"} : testimonial
-    ));
-    toast.success("Testimonial rejected");
-  }
-};
+    if (error) {
+      toast.error("Failed to reject testimonial: " + error.message);
+    } else {
+      setTestimonials(testimonials.map(testimonial =>
+        testimonial.id === id ? { ...testimonial, status: "rejected" } : testimonial
+      ));
+      toast.success("Testimonial rejected");
+    }
+  };
 
   // const handleReject = (id: number) => {
   //   setRecentTestimonials(recentTestimonials.map(testimonial =>
@@ -285,18 +285,18 @@ const recentTestimonials = testimonials.slice(0, 2);
   //   }
   // };
 
-  
+
   const handleEditSave = () => {
     if (editingTestimonial) {
-      setTestimonials(testimonials.map(testimonial => 
-        testimonial.id === editingTestimonial.id 
+      setTestimonials(testimonials.map(testimonial =>
+        testimonial.id === editingTestimonial.id
           ? {
-              ...testimonial,
-              name: editForm.name,
-              company: editForm.company,
-              content: editForm.content,
-              rating: editForm.rating
-            } 
+            ...testimonial,
+            name: editForm.name,
+            company: editForm.company,
+            content: editForm.content,
+            rating: editForm.rating
+          }
           : testimonial
       ));
       setIsEditDialogOpen(false);
@@ -393,11 +393,18 @@ const recentTestimonials = testimonials.slice(0, 2);
                     </>
                   )}
                 </Button>
-                <Link to={`/wall/${request.company_name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank">
+                {/* <Link to={`/wall/${request.id}`}>
                   <Button variant="outline" size="icon" className="text-purple-600 border-purple-200">
                     <LinkIcon className="h-4 w-4" />
                   </Button>
-                </Link>
+                </Link> */}
+                <a href={`/wall/${request.id}`} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" size="icon" className="text-purple-600 border-purple-200">
+                    <LinkIcon className="h-4 w-4" />
+                  </Button>
+                </a>
+
+
                 <TestimonialEmbed companySlug={request.company_name.toLowerCase().replace(/\s+/g, '-')} />
               </div>
             </div>

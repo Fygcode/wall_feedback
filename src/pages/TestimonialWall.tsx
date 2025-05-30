@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Briefcase, Star } from "lucide-react";
 import TestimonialVideo from "@/components/TestimonialVideo";
+import { supabase } from "@/supabaseClient";
 
 // Mock company data - in a real app, this would come from an API/database
 const companyData = {
@@ -29,7 +30,7 @@ const companyData = {
   "growth-marketing": {
     name: "Growth Marketing Agency",
     services: ["SEO Optimization", "Content Marketing", "Paid Advertising"],
-    logoColor: "bg-purple-500", 
+    logoColor: "bg-purple-500",
     description: "Data-driven marketing agency specializing in growth strategies that deliver measurable results."
   },
   "design-studio": {
@@ -59,69 +60,66 @@ interface Testimonial {
 }
 
 const TestimonialWall = () => {
-  const { company } = useParams();
+  const { requestId } = useParams();
   const [sortBy, setSortBy] = useState("newest");
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([
-    {
-      id: 1,
-      name: "Alex Turner",
-      company: "Digital Agency XYZ",
-      website: "digitalxyz.com",
-      content: "Working with you has been a game-changer for our business. The website redesign increased our conversion rate by 45%!",
-      rating: 5,
-      date: "May 2, 2025"
-    },
-    {
-      id: 2,
-      name: "Jessica Martinez",
-      company: "StartUp Innovations",
-      website: "startupinnovations.co",
-      content: "The social media strategy you developed helped us reach new audiences we hadn't connected with before. Our engagement is up 60%.",
-      rating: 5,
-      date: "May 1, 2025",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      previewImageUrl: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      id: 3,
-      name: "Michael Chen",
-      company: "Growth Marketing Agency",
-      website: "growthmarketing.io",
-      content: "As a marketing agency, we need social proof for ourselves and our clients. This service makes this process seamless and professional.",
-      rating: 4,
-      date: "April 28, 2025"
-    },
-    {
-      id: 4,
-      name: "Priya Sharma",
-      company: "Design Studio",
-      website: "priyaDesigns.com",
-      content: "The branding package exceeded my expectations. My clients love the new logo and brand identity!",
-      rating: 5,
-      date: "April 25, 2025",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      previewImageUrl: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      id: 5,
-      name: "David Wilson",
-      company: "Tech Solutions Ltd",
-      website: "techsolutions.co",
-      content: "Great communication throughout the project. Delivered on time and on budget. Will definitely work with you again.",
-      rating: 4,
-      date: "April 20, 2025"
-    },
-  ]);
-  
-  // Format company slug and find company data
-  const companySlug = company ? company.toLowerCase().replace(/\s+/g, '-') : "";
-  const currentCompany = companyData[companySlug as keyof typeof companyData] || {
-    name: "Your Company",
-    services: ["Professional Services"],
-    logoColor: "bg-purple-500",
-    description: "Don't just take our word for it. See what our clients have to say about working with us."
-  };
-  
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [companyInfo, setCompanyInfo] = useState<{
+    name: string;
+    services: string[];
+    logoColor: string;
+    description: string;
+  } | null>(null);
+
+
+  useEffect(() => {
+    if (!requestId) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+
+      // 1. Fetch approved testimonials
+      const { data: testimonialsData, error: testimonialsError } = await supabase
+        .from("testimonials")
+        .select("*")
+        .eq("status", "approved")
+        .eq("request_id", requestId)
+        .order("created_at", { ascending: false });
+
+      if (testimonialsError) {
+        console.error("Error fetching testimonials:", testimonialsError.message);
+        setTestimonials([]);
+      } else {
+        setTestimonials(testimonialsData);
+      }
+
+      // 2. Fetch testimonial request (i.e., company details)
+      const { data: requestData, error: requestError } = await supabase
+        .from("testimonial_requests")
+        .select("*")
+        .eq("id", requestId)
+        .single();
+
+      if (requestError) {
+        console.error("Error fetching company info:", requestError.message);
+        setCompanyInfo(null);
+      } else {
+        setCompanyInfo({
+          name: requestData.company_name || "Your Company",
+          services: requestData.services?.split(",") || ["Professional Services"],
+          logoColor: requestData.logo_color || "bg-purple-500",
+          description: requestData.description || "Don't just take our word for it. See what our clients have to say about working with us.",
+        });
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [requestId]);
+
+
+
   useEffect(() => {
     // Sort testimonials
     const sortedTestimonials = [...testimonials].sort((a, b) => {
@@ -133,10 +131,15 @@ const TestimonialWall = () => {
         return a.rating - b.rating;
       }
     });
-    
+
     setTestimonials(sortedTestimonials);
   }, [sortBy]);
-  
+
+  if (!companyInfo) {
+    return <div className="p-12 text-center text-gray-500">Loading testimonial wall...</div>;
+  }
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -144,30 +147,38 @@ const TestimonialWall = () => {
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-5xl mx-auto">
             <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
-              <div className={`w-20 h-20 rounded-lg ${currentCompany.logoColor} flex items-center justify-center flex-shrink-0`}>
+              {/* <div className={`w-20 h-20 rounded-lg ${companyInfo.logoColor} flex items-center justify-center flex-shrink-0`}>
+                <Briefcase className="text-white" size={36} />
+              </div> */}
+
+              <div className={`w-20 h-20 rounded-lg ${companyInfo?.logoColor || 'bg-purple-500'} flex items-center justify-center`}>
                 <Briefcase className="text-white" size={36} />
               </div>
+
+
+
               <div className="flex-grow text-center md:text-left">
-                <h1 className="text-3xl md:text-4xl font-bold mb-2">{currentCompany.name}</h1>
+               <h1 className="text-3xl md:text-4xl font-bold mb-2">{companyInfo?.name || "Your Company"}</h1>
+
                 <p className="text-lg text-gray-600 mb-3">
-                  Specializing in: {currentCompany.services.join(" • ")}
+                  Specializing in: {companyInfo.services.join(" • ")}
                 </p>
                 <p className="text-gray-600 max-w-2xl">
-                  {currentCompany.description}
+                  {companyInfo.description}
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-  
+
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div className="text-sm text-gray-500">
               {testimonials.length} testimonials
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <span className="text-sm">Sort by:</span>
               <Select value={sortBy} onValueChange={setSortBy}>
@@ -182,8 +193,11 @@ const TestimonialWall = () => {
               </Select>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+
+
             {testimonials.map((testimonial) => (
               <div key={testimonial.id} className="testimonial-card bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:-translate-y-1 transition-transform duration-200 flex flex-col">
                 <div className="flex space-x-1 mb-4">
@@ -194,21 +208,21 @@ const TestimonialWall = () => {
                     <Star key={i} className="w-4 h-4" fill="none" color="#D1D5DB" />
                   ))}
                 </div>
-                
+
                 {testimonial.videoUrl && (
                   <div className="mb-4">
-                    <TestimonialVideo 
-                      videoUrl={testimonial.videoUrl} 
+                    <TestimonialVideo
+                      videoUrl={testimonial.videoUrl}
                       previewImageUrl={testimonial.previewImageUrl}
                     />
                   </div>
                 )}
-                
+
                 <p className="text-gray-700 mb-4">{testimonial.content}</p>
                 <div className="mt-auto">
                   <h3 className="font-medium text-gray-900">{testimonial.name}</h3>
                   <p className="text-sm text-gray-500">
-                    {testimonial.company} 
+                    {testimonial.company}
                     {testimonial.website && (
                       <> • <a href={`https://${testimonial.website}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">{testimonial.website}</a></>
                     )}
@@ -216,8 +230,9 @@ const TestimonialWall = () => {
                 </div>
               </div>
             ))}
+
           </div>
-          
+
           <div className="mt-12 text-center">
             <p className="text-gray-500 mb-4">Want to showcase testimonials like these on your website?</p>
             <Link to="/">
@@ -228,7 +243,7 @@ const TestimonialWall = () => {
           </div>
         </div>
       </div>
-      
+
       {/* New Embed Section */}
       <div className="bg-purple-50 py-12">
         <div className="container mx-auto px-4">
@@ -248,7 +263,7 @@ const TestimonialWall = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="border-t border-gray-200 py-4">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center">

@@ -46,7 +46,9 @@ const App = () => (
 
             {/* Submit route should be above dashboard */}
             <Route path="/submit/:company/:slug" element={<TestimonialSubmit />} />
-            <Route path="/wall/:company?" element={<TestimonialWall />} />
+            {/* <Route path="/wall/:company?" element={<TestimonialWall />} /> */}
+            <Route path="/wall/:requestId" element={<TestimonialWall />} />
+
             <Route path="/embed/:company?" element={<EmbedWall />} />
 
             {/* Dashboard Layout */}
