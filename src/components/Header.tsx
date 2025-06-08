@@ -25,7 +25,8 @@ const Header = () => {
           <Link to="/features" className="text-sm font-medium text-gray-600 hover:text-purple-500 transition-colors">
             Features
           </Link>
-          <Link to="/pricing" className="text-sm font-medium text-gray-600 hover:text-purple-500 transition-colors">
+          {/* <Link to="/pricing" className="text-sm font-medium text-gray-600 hover:text-purple-500 transition-colors"> */}
+           <Link to="/" className="text-sm font-medium text-gray-600 hover:text-purple-500 transition-colors">
             Pricing
           </Link>
         </nav>

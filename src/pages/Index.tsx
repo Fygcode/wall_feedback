@@ -49,7 +49,7 @@ const Index = () => {
       period: "/month",
       description: "Perfect for individuals just getting started",
       features: [
-        "Up to 10 testimonials", 
+        "Up to 10 testimonials",
         "Basic testimonial wall",
         "Public testimonial page"
       ],
@@ -58,13 +58,13 @@ const Index = () => {
     },
     {
       name: "Pro",
-      monthlyPrice: "$21",
-      yearlyPrice: "$17",
-      yearlyTotal: "$204",
+      monthlyPrice: "$9",
+      yearlyPrice: "$8",
+      yearlyTotal: "$96",
       period: "/month",
       description: "For growing businesses needing more features",
       features: [
-        "Unlimited testimonials", 
+        "Unlimited testimonials",
         "Custom branding",
         "Website embedding",
         "Moderation controls",
@@ -74,14 +74,14 @@ const Index = () => {
       popular: true,
     },
     {
-      name: "Enterprise",
-      monthlyPrice: "$49",
-      yearlyPrice: "$41",
-      yearlyTotal: "$492",
+      name: "Team",
+      monthlyPrice: "$30",
+      yearlyPrice: "$25",
+      yearlyTotal: "$300",
       period: "/month",
-      description: "For large teams with advanced needs",
+      description: "For teams and agencies managing multiple brands",
       features: [
-        "Everything in Pro", 
+        "Everything in Pro",
         "Priority support",
         "API access",
         "Team collaboration",
@@ -91,7 +91,8 @@ const Index = () => {
       popular: false,
     }
   ];
-  
+
+
   // Stats for trust-building section
   const stats = [
     { value: "10,000+", label: "Happy Customers" },
@@ -99,16 +100,16 @@ const Index = () => {
     { value: "35%", label: "Avg. Conversion Increase" },
     { value: "98%", label: "Customer Satisfaction" }
   ];
-  
+
   // Trusted companies logos
   const trustedCompanies = [
     "Adobe", "Microsoft", "Google", "Stripe", "Shopify", "Atlassian"
   ];
-  
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      
+
       {/* Hero Section with Image */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="container mx-auto px-4">
@@ -122,7 +123,7 @@ const Index = () => {
                 Send a single link, collect beautiful testimonials, and showcase them on your website to win more clients.
               </p>
               <div className="flex flex-col sm:flex-row justify-start gap-4">
-                <Link to="/signup">
+                <Link to="/auth">
                   <Button className="w-full sm:w-auto text-lg gradient-bg px-8 py-6">
                     Get Started - It's Free
                   </Button>
@@ -136,58 +137,58 @@ const Index = () => {
             </div>
             <div className="relative">
               <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-200 rounded-full opacity-20 blur-3xl"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1661956602153-23384936a1d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                alt="Testimonial Wall Example" 
+              <img
+                src="https://images.unsplash.com/photo-1661956602153-23384936a1d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                alt="Testimonial Wall Example"
                 className="rounded-xl shadow-2xl border border-purple-100 transform rotate-1 hover:rotate-0 transition-transform duration-300"
               />
             </div>
           </div>
         </div>
       </section>
-      
+
       {/* How It Works Section with Icons/Graphics */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white p-6 rounded-xl card-shadow text-center relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="w-16 h-16 rounded-full gradient-bg flex items-center justify-center mx-auto mb-4 relative">
                 <span className="text-2xl font-bold text-white">1</span>
               </div>
-              <img 
-                src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" 
-                alt="Create request" 
+              <img
+                src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+                alt="Create request"
                 className="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-purple-100"
               />
               <h3 className="text-xl font-semibold mb-2">Create Request</h3>
               <p className="text-gray-600 relative z-10">Create a testimonial request and get a unique link to share with your clients.</p>
             </div>
-            
+
             <div className="bg-white p-6 rounded-xl card-shadow text-center relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="w-16 h-16 rounded-full gradient-bg flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-white">2</span>
               </div>
-              <img 
-                src="https://images.unsplash.com/photo-1590650046871-92c887180603?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
-                alt="Client submits" 
+              <img
+                src="https://images.unsplash.com/photo-1590650046871-92c887180603?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                alt="Client submits"
                 className="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-purple-100"
               />
               <h3 className="text-xl font-semibold mb-2">Client Submits</h3>
               <p className="text-gray-600 relative z-10">Your client shares their experience through a simple form that takes less than a minute.</p>
             </div>
-            
+
             <div className="bg-white p-6 rounded-xl card-shadow text-center relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="w-16 h-16 rounded-full gradient-bg flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-white">3</span>
               </div>
-              <img 
-                src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
-                alt="Showcase testimonials" 
+              <img
+                src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                alt="Showcase testimonials"
                 className="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-purple-100"
               />
               <h3 className="text-xl font-semibold mb-2">Showcase</h3>
@@ -196,13 +197,13 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Featured Testimonials with Background Image */}
       <section className="py-16 relative">
         <div className="absolute inset-0 opacity-5 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
-            alt="Background" 
+          <img
+            src="https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            alt="Background"
             className="w-full h-full object-cover"
           />
         </div>
@@ -210,7 +211,7 @@ const Index = () => {
           <h2 className="text-3xl font-bold text-center mb-12">
             Trusted by Freelancers & Agencies
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {featuredTestimonials.map((testimonial) => (
               <div key={testimonial.id} className="testimonial-card group hover:shadow-xl transition-shadow duration-300">
@@ -229,14 +230,14 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Trust Building Section with Image - NEW */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold mb-8">Trusted by Businesses Worldwide</h2>
-              
+
               {/* Stats */}
               <div className="grid grid-cols-2 gap-6 mb-8">
                 {stats.map((stat, index) => (
@@ -246,7 +247,7 @@ const Index = () => {
                   </div>
                 ))}
               </div>
-              
+
               {/* Company logos */}
               <div className="mb-8">
                 <p className="text-gray-500 mb-4">TRUSTED BY INDUSTRY LEADERS</p>
@@ -260,17 +261,17 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-200 rounded-full opacity-20 blur-3xl"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" 
-                alt="Business analytics" 
+              <img
+                src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+                alt="Business analytics"
                 className="rounded-xl shadow-xl border border-gray-100 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
               />
             </div>
           </div>
-          
+
           {/* Additional trust elements */}
           <div className="mt-16 max-w-3xl mx-auto">
             <div className="bg-white p-6 rounded-xl card-shadow">
@@ -287,7 +288,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Pricing Section with Image - NEW */}
       <section className="py-16">
         <div className="container mx-auto px-4">
@@ -297,11 +298,11 @@ const Index = () => {
               <p className="text-lg text-gray-600 mb-8">
                 Start with our free plan and upgrade as your business grows. No hidden fees, cancel anytime.
               </p>
-              
+
               {/* Billing toggle */}
               <div className="mb-8">
-                <Tabs 
-                  defaultValue="monthly" 
+                <Tabs
+                  defaultValue="monthly"
                   className="inline-flex bg-gray-100 p-1 rounded-full"
                   onValueChange={(value) => setBillingCycle(value as "monthly" | "yearly")}
                 >
@@ -315,22 +316,22 @@ const Index = () => {
                   </TabsList>
                 </Tabs>
               </div>
-              
+
               <Link to="/pricing" className="inline-flex items-center text-purple-600 hover:text-purple-800 font-medium">
                 View all pricing details <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
-            
+
             <div className="relative">
               <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-200 rounded-full opacity-20 blur-3xl"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
-                alt="Pricing visualization" 
+              <img
+                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                alt="Pricing visualization"
                 className="rounded-xl shadow-xl border border-gray-100 transform rotate-2 hover:rotate-0 transition-transform duration-300"
               />
             </div>
           </div>
-          
+
           {/* Pricing Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {pricingPlans.map((plan, index) => (
@@ -356,7 +357,7 @@ const Index = () => {
                     </p>
                   )}
                   <p className="text-gray-600 mb-6">{plan.description}</p>
-                  
+
                   <ul className="mb-8 space-y-3">
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start">
@@ -365,9 +366,10 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  
-                  <Link to="/pricing">
-                    <Button 
+
+                  {/* <Link to="/pricing"> */}
+                   <Link to="/">
+                    <Button
                       className={`w-full ${plan.popular ? 'gradient-bg' : 'bg-white text-gray-800 border border-gray-200 hover:bg-gray-50'}`}
                     >
                       {plan.cta}
@@ -379,7 +381,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Features Section with Dashboard Preview */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -389,48 +391,48 @@ const Index = () => {
               Everything you need to collect, manage, and showcase your client testimonials in one place.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white p-6 rounded-xl card-shadow">
                 <h3 className="text-xl font-semibold mb-3">One-Click Collection</h3>
                 <p className="text-gray-600">Share a single link with clients to collect testimonials effortlessly.</p>
               </div>
-              
+
               <div className="bg-white p-6 rounded-xl card-shadow">
                 <h3 className="text-xl font-semibold mb-3">Beautiful Testimonial Wall</h3>
                 <p className="text-gray-600">Showcase testimonials in an attractive, customizable layout.</p>
               </div>
-              
+
               <div className="bg-white p-6 rounded-xl card-shadow">
                 <h3 className="text-xl font-semibold mb-3">Website Embedding</h3>
                 <p className="text-gray-600">Easily embed testimonials on your website with our simple code snippet.</p>
               </div>
-              
+
               <div className="bg-white p-6 rounded-xl card-shadow">
                 <h3 className="text-xl font-semibold mb-3">Moderation Controls</h3>
                 <p className="text-gray-600">Review and approve testimonials before they go live on your wall.</p>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-200 rounded-full opacity-20 blur-3xl"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80" 
-                alt="Dashboard Preview" 
+              <img
+                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80"
+                alt="Dashboard Preview"
                 className="rounded-xl shadow-2xl border border-purple-100 transform rotate-1 hover:rotate-0 transition-transform duration-300"
               />
             </div>
           </div>
         </div>
       </section>
-      
+
       {/* CTA Section with Background Image */}
       <section className="py-16 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" 
-            alt="Background" 
+          <img
+            src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80"
+            alt="Background"
             className="w-full h-full object-cover"
           />
         </div>
@@ -449,7 +451,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
       <Footer />
     </div>
   );
