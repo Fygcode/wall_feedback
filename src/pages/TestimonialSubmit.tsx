@@ -545,46 +545,46 @@ const TestimonialSubmit = () => {
     setFormData(prev => ({ ...prev, videoUrl }));
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!user) {
-    toast.error("You must be logged in to submit a testimonial.");
-    return;
-  }
-
-  try {
-    const { id: userId } = user;
-
-    const testimonialData = {
-      request_id: requestId,
-      name: formData.name,
-      company: formData.businessName || null,
-      position: null,
-      content: formData.testimonial,
-      rating,
-      business_website: formData.website || null,
-      social_link: formData.website || null,
-      video_url: formData.videoUrl || null,
-      status: "pending",
-    };
-
-    // ✅ Log all data
-    console.log("Submitting testimonial data:", testimonialData);
-
-    const { error } = await supabase.from("testimonials").insert([testimonialData]);
-
-    if (error) {
-      console.error("Error saving testimonial:", error.message);
-      toast.error("Failed to submit testimonial.");
-    } else {
-      setSubmitted(true);
+    if (!user) {
+      toast.error("You must be logged in to submit a testimonial.");
+      return;
     }
-  } catch (err) {
-    console.error("Unexpected error:", err);
-    toast.error("Something went wrong.");
-  }
-};
+
+    try {
+      const { id: userId } = user;
+
+      const testimonialData = {
+        request_id: requestId,
+        name: formData.name,
+        company: formData.businessName || null,
+        position: null,
+        content: formData.testimonial,
+        rating,
+        business_website: formData.website || null,
+        social_link: formData.website || null,
+        video_url: formData.videoUrl || null,
+        status: "pending",
+      };
+
+      // ✅ Log all data
+      console.log("Submitting testimonial data:", testimonialData);
+
+      const { error } = await supabase.from("testimonials").insert([testimonialData]);
+
+      if (error) {
+        console.error("Error saving testimonial:", error.message);
+        toast.error("Failed to submit testimonial.");
+      } else {
+        setSubmitted(true);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      toast.error("Something went wrong.");
+    }
+  };
 
 
   const handleRatingClick = (value: number) => setRating(value);
@@ -626,15 +626,19 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 
   return (
-  
+
     <div className="min-h-screen bg-gray-50 pb-12">
       {/* Hero Section */}
-      <div className="bg-white shadow-sm border-b">
+      {/* <div className="bg-yellow-200 shadow-sm border-b min-h-[300px]">
         <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className={`w-16 h-16 rounded-lg ${logoColor} flex items-center justify-center flex-shrink-0`}>
               <Briefcase className="text-white" size={32} />
             </div>
+            <div className="w-20 h-20 rounded-lg overflow-hidden bg-white flex items-center justify-center">
+              <img src="/GNG LOGO.png" alt="Logo" className="w-full h-full object-contain" />
+            </div>
+
             <div className="flex-grow text-center md:text-left">
               <h1 className="text-3xl font-bold mb-2">
                 {companyData?.company_name}
@@ -646,21 +650,41 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           </div>
         </div>
+      </div> */}
+
+      <div className="bg-yellow-200 shadow-sm border-b min-h-[300px] flex items-center justify-center">
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-20 h-20 rounded-lg overflow-hidden bg-white flex items-center justify-center">
+            <img src="/GNG LOGO.png" alt="Logo" className="w-full h-full object-contain" />
+          </div>
+
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              {companyData?.company_name}
+            </h1>
+            <p className="text-gray-600">
+              {companyData?.service_name}
+            </p>
+          </div>
+        </div>
       </div>
+
+
+
 
       <div className="max-w-lg mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-2 mb-6">
+          {/* <div className="flex items-center justify-center space-x-2 mb-6">
             <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center">
               <span className="text-white font-bold">W</span>
             </div>
             <span className="font-poppins font-semibold text-xl text-gray-800">WallFeedback</span>
-          </div>
+          </div> */}
 
           <h2 className="text-2xl font-bold mb-2">Share Your Experience</h2>
-       <p className="text-gray-600">
-  {companyData?.company_name || "Our Company"} would love to hear about your experience!
-</p>
+          <p className="text-gray-600">
+            {companyData?.company_name || "Our Company"} would love to hear about your experience!
+          </p>
 
         </div>
 
@@ -716,6 +740,20 @@ const handleSubmit = async (e: React.FormEvent) => {
                 />
               </div>
 
+              {/* <div className="space-y-2">
+                <label htmlFor="website" className="text-sm font-medium flex justify-between">
+                  <span>Website or Social Media URL</span>
+                  <span className="text-gray-500 text-xs">Optional</span>
+                </label>
+                <Input
+                  id="website"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleChange}
+                  placeholder="https://yourwebsite.com"
+                />
+              </div> */}
+
               <div className="space-y-2">
                 <label htmlFor="website" className="text-sm font-medium flex justify-between">
                   <span>Website or Social Media URL</span>
@@ -728,7 +766,14 @@ const handleSubmit = async (e: React.FormEvent) => {
                   onChange={handleChange}
                   placeholder="https://yourwebsite.com"
                 />
+                <p className="text-xs text-gray-600 mt-1">
+                  <strong>Note:</strong> Get visitors and leads by displaying your link on our testimonial wall — featured in my Instagram bio.
+                </p>
+
+
+
               </div>
+
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">
