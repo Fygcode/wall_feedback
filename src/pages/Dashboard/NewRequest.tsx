@@ -76,7 +76,7 @@ const NewRequest = () => {
     const baseUrl =
       process.env.NODE_ENV === "development"
         ? "http://localhost:8080" // Change the port if your local setup is different
-        : "https://wallfeedback.com";
+        : "https://wallfeedback.netlify.app";
     return `${baseUrl}/submit/${companySlug}/${slug}`;
   };
 

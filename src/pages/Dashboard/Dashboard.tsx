@@ -137,9 +137,10 @@ const Dashboard = () => {
     const baseUrl =
       process.env.NODE_ENV === "development"
         ? "http://localhost:8080"
-        : "https://wallfeedback.com";
+        : "https://wallfeedback.netlify.app"; // updated live URL
     return `${baseUrl}/submit/${companySlug}/${slug}`;
   };
+
 
 
 

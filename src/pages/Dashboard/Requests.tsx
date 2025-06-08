@@ -108,7 +108,7 @@ const Requests = () => {
     const baseUrl =
       process.env.NODE_ENV === "development"
         ? "http://localhost:8080"
-        : "https://wallfeedback.com";
+        : "https://wallfeedback.netlify.app";
     return `${baseUrl}/submit/${companySlug}/${slug}`;
   };
 
