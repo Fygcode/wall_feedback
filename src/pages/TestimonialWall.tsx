@@ -51,7 +51,7 @@ interface Testimonial {
   id: number;
   name: string;
   company: string;
-  website: string;
+  business_website: string;
   content: string;
   rating: number;
   date: string;
@@ -106,9 +106,10 @@ const TestimonialWall = () => {
       } else {
         setCompanyInfo({
           name: requestData.company_name || "Your Company",
-          services: requestData.services?.split(",") || ["Professional Services"],
+          services: requestData.service_name?.split(",") || ["Professional Services"],
           logoColor: requestData.logo_color || "bg-purple-500",
-          description: requestData.description || "Don't just take our word for it. See what our clients have to say about working with us.",
+          description: requestData.description || "Hear directly from our clients — their feedback speaks louder than we can."
+
         });
       }
 
@@ -143,13 +144,13 @@ const TestimonialWall = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-white pb-8 border-b">
+      {/* <div className="bg-white pb- border-b">
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-5xl mx-auto">
             <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
-              {/* <div className={`w-20 h-20 rounded-lg ${companyInfo.logoColor} flex items-center justify-center flex-shrink-0`}>
+              <div className={`w-20 h-20 rounded-lg ${companyInfo.logoColor} flex items-center justify-center flex-shrink-0`}>
                 <Briefcase className="text-white" size={36} />
-              </div> */}
+              </div>
 
               <div className={`w-20 h-20 rounded-lg ${companyInfo?.logoColor || 'bg-purple-500'} flex items-center justify-center`}>
                 <Briefcase className="text-white" size={36} />
@@ -158,10 +159,10 @@ const TestimonialWall = () => {
 
 
               <div className="flex-grow text-center md:text-left">
-               <h1 className="text-3xl md:text-4xl font-bold mb-2">{companyInfo?.name || "Your Company"}</h1>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">{companyInfo?.name || "Your Company"}</h1>
 
                 <p className="text-lg text-gray-600 mb-3">
-                  Specializing in: {companyInfo.services.join(" • ")}
+                  {companyInfo.services.join(" • ")}
                 </p>
                 <p className="text-gray-600 max-w-2xl">
                   {companyInfo.description}
@@ -170,7 +171,35 @@ const TestimonialWall = () => {
             </div>
           </div>
         </div>
+      </div> */}
+
+      <div className="bg-yellow-200 border-b min-h-[35vh] flex items-center">
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
+              {/* <div className={`w-20 h-20 rounded-lg ${companyInfo?.logoColor || 'bg-purple-500'} flex items-center justify-center`}>
+                <Briefcase className="text-white" size={36} />
+              </div> */}
+
+              <div className="w-20 h-20 rounded-lg overflow-hidden bg-white flex items-center justify-center">
+                <img src="/GNG LOGO.png" alt="Logo" className="w-full h-full object-contain" />
+              </div>
+
+
+              <div className="flex-grow text-center md:text-left">
+                <h1 className="text-4xl md:text-4xl font-bold mb-2 text-bl">{companyInfo?.name || "Your Company"}</h1>
+                <p className="text-2xl text-black font-semibold mb-3">
+                  {companyInfo.services.join(" • ")}
+                </p>
+                <p className="text-black font-semibold max-w-2xl">
+                  {companyInfo.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
 
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
@@ -219,33 +248,60 @@ const TestimonialWall = () => {
                 )}
 
                 <p className="text-gray-700 mb-4">{testimonial.content}</p>
+
                 <div className="mt-auto">
-                  <h3 className="font-medium text-gray-900">{testimonial.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    {testimonial.company}
-                    {testimonial.website && (
-                      <> • <a href={`https://${testimonial.website}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">{testimonial.website}</a></>
-                    )}
+                  {/* <h3 className="font-medium text-gray-900">{testimonial.name}</h3> */}
+
+                  <h3 className="font-medium text-gray-900 flex items-center space-x-2">
+                    {/* Avatar */}
+                    <span className="w-8 h-8 mr-2 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold text-sm">
+                      {testimonial.name?.charAt(0).toUpperCase()}
+                    </span>
+
+                    {/* Name */}
+                    {testimonial.name}
+                  </h3>
+
+                  {/* Company name */}
+                  <p className="text-sm text-gray-500 ml-10">
+                    {testimonial.company} <span>•</span>
                   </p>
+
+                  {/* Website link on next line */}
+                  {testimonial.business_website && (
+                    <p className="text-sm text-purple-600 hover:underline ml-10 max-w-xs truncate" title={testimonial.business_website}>
+                      <a
+                        href={testimonial.business_website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        {testimonial.business_website}
+                      </a>
+                    </p>
+                  )}
+
+
+
                 </div>
               </div>
             ))}
 
           </div>
 
-          <div className="mt-12 text-center">
+          {/* <div className="mt-12 text-center">
             <p className="text-gray-500 mb-4">Want to showcase testimonials like these on your website?</p>
             <Link to="/">
               <Button variant="default" className="gradient-bg">
                 Try WallFeedback for Free
               </Button>
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
 
       {/* New Embed Section */}
-      <div className="bg-purple-50 py-12">
+      {/* <div className="bg-purple-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold text-purple-900 mb-4">Website Embedding</h2>
@@ -262,25 +318,26 @@ const TestimonialWall = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="border-t border-gray-200 py-4">
+
+      <footer className="border-t border-gray-200 py-4 w-full">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-center items-center">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 rounded-full gradient-bg flex items-center justify-center">
+              <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center">
                 <span className="text-white font-bold text-xs">W</span>
               </div>
               <span className="text-xs text-gray-500">
                 Powered by <Link to="/" className="text-purple-600 hover:underline">WallFeedback</Link>
               </span>
             </div>
-            <Link to="/signup" className="text-xs text-purple-600 hover:underline">
-              Create your own testimonial wall
-            </Link>
           </div>
         </div>
-      </div>
+      </footer>
+
+
+
     </div>
   );
 };

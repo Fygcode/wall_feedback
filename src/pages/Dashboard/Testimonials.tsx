@@ -50,38 +50,6 @@ interface Testimonial {
 }
 
 const Testimonials = () => {
-  // const [testimonials, setTestimonials] = useState<Testimonial[]>([
-  //   {
-  //     id: 1,
-  //     name: "Alex Turner",
-  //     company: "Digital Agency XYZ",
-  //     date: "May 2, 2025",
-  //     content: "Working with you has been a game-changer for our business. The website redesign increased our conversion rate by 45%!",
-  //     status: "approved",
-  //     rating: 5,
-  //     service: "Website Redesign"
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Jessica Martinez",
-  //     company: "StartUp Innovations",
-  //     date: "May 1, 2025",
-  //     content: "The social media strategy you developed helped us reach new audiences we hadn't connected with before. Our engagement is up 60%.",
-  //     status: "pending",
-  //     rating: 5,
-  //     service: "Social Media Marketing"
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Michael Johnson",
-  //     company: "Johnson Retail",
-  //     date: "April 28, 2025",
-  //     content: "Your e-commerce solutions transformed our online store experience. Sales have increased by 30% in just the first month.",
-  //     status: "approved",
-  //     rating: 4,
-  //     service: "E-commerce Development"
-  //   }
-  // ]);
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
@@ -97,108 +65,108 @@ const Testimonials = () => {
     rating: 5
   });
 
-useEffect(() => {
-  const fetchTestimonials = async () => {
-    const { data, error } = await supabase
-      .from("testimonials")
-      .select("*")
-      .order("created_at", { ascending: false }); // you can change ordering as needed
+  useEffect(() => {
+    console.log("useEffect triggered: fetching testimonials"); // ✅
 
-       const now = new Date().toLocaleString();
+    const fetchTestimonials = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching testimonials:", error.message);
-      toast.error("Failed to load testimonials");
-    } else {
-      console.log("Raw Supabase data:", data); // ✅ log raw data
+        const now = new Date().toLocaleString();
 
-let formatted = [];
-try {
-  formatted = data.map((item) => ({
-    id: item.id,
-    name: item.name,
-    company: item.company || "N/A",
-    date: new Date(item.created_at).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }),
-    content: item.content,
-    status: item.status || "pending",
-    rating: item.rating || 0,
-    service: item.service || "N/A",
-  }));
-} catch (e) {
-  console.error("Error while formatting data:", e);
-}
+        if (error) {
+          console.error("Error fetching testimonials:", error.message);
+          toast.error("Failed to load testimonials");
+          return;
+        }
 
+        console.log("Raw Supabase data:", data);
+
+        const formatted = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          company: item.company || "N/A",
+          date: new Date(item.created_at).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          content: item.content,
+          status: item.status || "pending",
+          rating: item.rating || 0,
+          service: item.service || "N/A",
+        }));
 
         console.log(`[${now}] Formatted testimonials:`, formatted);
+        setTestimonials(formatted);
+      } catch (e) {
+        console.error("Unexpected error in fetchTestimonials:", e);
+      }
+    };
 
-      setTestimonials(formatted);
+    fetchTestimonials();
+  }, []);
+
+
+
+  const handleApprove = async (id: number) => {
+    // Update status in Supabase
+    const { data, error } = await supabase
+      .from("testimonials")
+      .update({ status: "approved" })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Failed to approve testimonial:", error.message);
+      toast.error("Failed to approve testimonial");
+    } else {
+      // Update local state only if DB update succeeds
+      setTestimonials(testimonials.map(testimonial =>
+        testimonial.id === id ? { ...testimonial, status: "approved" } : testimonial
+      ));
+      toast.success("Testimonial approved successfully!");
     }
   };
 
-  fetchTestimonials();
-}, []);
 
+  const handleReject = async (id: number) => {
+    const { data, error } = await supabase
+      .from("testimonials")
+      .update({ status: "rejected" })
+      .eq("id", id);
 
+    console.log("Reject response data:", data);
+    console.log("Reject response error:", error);
 
-const handleApprove = async (id: number) => {
-  // Update status in Supabase
-  const { data, error } = await supabase
-    .from("testimonials")
-    .update({ status: "approved" })
-    .eq("id", id);
+    if (error) {
+      toast.error("Failed to reject testimonial: " + error.message);
+    } else {
+      setTestimonials(testimonials.map(testimonial =>
+        testimonial.id === id ? { ...testimonial, status: "rejected" } : testimonial
+      ));
+      toast.success("Testimonial rejected");
+    }
+  };
 
-  if (error) {
-    console.error("Failed to approve testimonial:", error.message);
-    toast.error("Failed to approve testimonial");
-  } else {
-    // Update local state only if DB update succeeds
-    setTestimonials(testimonials.map(testimonial => 
-      testimonial.id === id ? {...testimonial, status: "approved"} : testimonial
-    ));
-    toast.success("Testimonial approved successfully!");
-  }
-};
+  const handleDelete = async (id: number) => {
+    const { data, error } = await supabase
+      .from("testimonials")
+      .delete()
+      .eq("id", id);
 
+    console.log("Delete response data:", data);
+    console.log("Delete response error:", error);
 
-const handleReject = async (id: number) => {
-  const { data, error } = await supabase
-    .from("testimonials")
-    .update({ status: "rejected" })
-    .eq("id", id);
-
-  console.log("Reject response data:", data);
-  console.log("Reject response error:", error);
-
-  if (error) {
-    toast.error("Failed to reject testimonial: " + error.message);
-  } else {
-    setTestimonials(testimonials.map(testimonial => 
-      testimonial.id === id ? {...testimonial, status: "rejected"} : testimonial
-    ));
-    toast.success("Testimonial rejected");
-  }
-};
-
-const handleDelete = async (id: number) => {
-  const { data, error } = await supabase
-    .from("testimonials")
-    .delete()
-    .eq("id", id);
-
-  console.log("Delete response data:", data);
-  console.log("Delete response error:", error);
-
-  if (error) {
-    toast.error("Failed to delete testimonial: " + error.message);
-  } else {
-    setTestimonials(testimonials.filter(testimonial => testimonial.id !== id));
-    toast.success("Testimonial deleted successfully");
-  }
-};
+    if (error) {
+      toast.error("Failed to delete testimonial: " + error.message);
+    } else {
+      setTestimonials(testimonials.filter(testimonial => testimonial.id !== id));
+      toast.success("Testimonial deleted successfully");
+    }
+  };
 
 
   const handleEditClick = (testimonial: Testimonial) => {
@@ -215,16 +183,16 @@ const handleDelete = async (id: number) => {
 
   const handleEditSave = () => {
     if (editingTestimonial) {
-      setTestimonials(testimonials.map(testimonial => 
-        testimonial.id === editingTestimonial.id 
+      setTestimonials(testimonials.map(testimonial =>
+        testimonial.id === editingTestimonial.id
           ? {
-              ...testimonial,
-              name: editForm.name,
-              company: editForm.company,
-              content: editForm.content,
-              service: editForm.service,
-              rating: editForm.rating
-            } 
+            ...testimonial,
+            name: editForm.name,
+            company: editForm.company,
+            content: editForm.content,
+            service: editForm.service,
+            rating: editForm.rating
+          }
           : testimonial
       ));
       setIsEditDialogOpen(false);
@@ -252,7 +220,7 @@ const handleDelete = async (id: number) => {
           <h1 className="text-2xl font-bold">All Testimonials</h1>
           <p className="text-gray-500">Manage your client testimonials</p>
         </div>
-        
+
         <div className="flex gap-2">
           <Button variant="outline">Export</Button>
         </div>
@@ -293,15 +261,14 @@ const handleDelete = async (id: number) => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      testimonial.status === "approved" 
-                        ? "bg-green-50 text-green-700" 
-                        : testimonial.status === "rejected"
-                          ? "bg-red-50 text-red-700"
-                          : "bg-yellow-50 text-yellow-700"
-                    }`}>
-                      {testimonial.status === "approved" ? "Approved" : 
-                       testimonial.status === "rejected" ? "Rejected" : "Pending"}
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${testimonial.status === "approved"
+                      ? "bg-green-50 text-green-700"
+                      : testimonial.status === "rejected"
+                        ? "bg-red-50 text-red-700"
+                        : "bg-yellow-50 text-yellow-700"
+                      }`}>
+                      {testimonial.status === "approved" ? "Approved" :
+                        testimonial.status === "rejected" ? "Rejected" : "Pending"}
                     </span>
                   </TableCell>
                   <TableCell>{testimonial.date}</TableCell>
@@ -309,44 +276,44 @@ const handleDelete = async (id: number) => {
                     <div className="flex justify-end space-x-2">
                       {/* Show approve button for pending or rejected testimonials */}
                       {(testimonial.status === "pending" || testimonial.status === "rejected") && (
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          className="h-8 w-8 text-green-600" 
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 text-green-600"
                           onClick={() => handleApprove(testimonial.id)}
                         >
                           <CheckCircle size={16} />
                         </Button>
                       )}
-                      
+
                       {/* Show reject button for pending or approved testimonials */}
                       {(testimonial.status === "pending" || testimonial.status === "approved") && (
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          className="h-8 w-8 text-red-600" 
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 text-red-600"
                           onClick={() => handleReject(testimonial.id)}
                         >
                           <XCircle size={16} />
                         </Button>
                       )}
-                      
+
                       {/* Edit button for all testimonials */}
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
+                      <Button
+                        variant="outline"
+                        size="icon"
                         className="h-8 w-8"
                         onClick={() => handleEditClick(testimonial)}
                       >
                         <Edit size={16} />
                       </Button>
-                      
+
                       {/* Delete button with confirmation for all testimonials */}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="icon" 
+                          <Button
+                            variant="outline"
+                            size="icon"
                             className="h-8 w-8 text-red-600"
                           >
                             <Trash2 size={16} />
