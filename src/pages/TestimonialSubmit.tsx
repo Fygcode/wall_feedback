@@ -548,13 +548,13 @@ const TestimonialSubmit = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!user) {
-      toast.error("You must be logged in to submit a testimonial.");
-      return;
-    }
+    // if (!user) {
+    //   toast.error("You must be logged in to submit a testimonial.");
+    //   return;
+    // }
 
     try {
-      const { id: userId } = user;
+    // const { id: userId } = user;
 
       const testimonialData = {
         request_id: requestId,
